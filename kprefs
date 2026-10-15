@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# Run the kicadprefs CLI from anywhere.
+exec python3 -I -c "import sys; sys.path.insert(0, sys.argv.pop(1)); from kicadprefs.__main__ import main; sys.exit(main(sys.argv[1:]))" "$(dirname "$(readlink -f "$0")")" "$@"

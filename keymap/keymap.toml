@@ -1,0 +1,183 @@
+# KiCad keymap - source of truth for user.hotkeys.
+# Only differences from KiCad's built-in defaults are listed; everything else
+# keeps its default.  "" unbinds.  Table form: { key = ..., alt = ..., why = ... }
+
+[meta]
+kicad = "10.0"
+layout = "qwerty"
+
+[bind]
+
+# --- 3DViewer.Control
+"3DViewer.Control.rotateZclockwise" = ""  # Rotate Z Clockwise
+"3DViewer.Control.rotateZcounterclockwise" = ""  # Rotate Z Counterclockwise
+
+# --- common.Control
+"common.Control.cursorDblClick" = ""  # Double-click
+"common.Control.cursorDownFast" = ""  # Cursor Down Fast
+"common.Control.cursorLeftFast" = ""  # Cursor Left Fast
+"common.Control.cursorRightFast" = ""  # Cursor Right Fast
+"common.Control.cursorUpFast" = ""  # Cursor Up Fast
+"common.Control.gridFast1" = "Z"  # Switch to Fast Grid 1
+"common.Control.gridFast2" = "X"  # Switch to Fast Grid 2
+"common.Control.gridNext" = "Alt+X"  # Switch to Next Grid
+"common.Control.gridPrev" = "Alt+Z"  # Switch to Previous Grid
+"common.Control.highContrastModeCycle" = "R"  # Inactive Layer View Mode (3-state)
+"common.Control.new" = ""  # New...
+"common.Control.pageSettings" = "F11"  # Page Settings...
+"common.Control.print" = ""  # Print...
+"common.Control.showDatasheet" = "H"  # Show Datasheet
+"common.Control.showProperties" = "V"  # Properties
+"common.Control.toggleGridOverrides" = ""  # Grid Overrides
+"common.Control.zoomCenter" = ""  # Center on Cursor
+"common.Control.zoomFitSelection" = "End"  # Zoom to Selected Objects
+"common.Control.zoomIn" = ""  # Zoom In at Cursor
+"common.Control.zoomOut" = ""  # Zoom Out at Cursor
+
+# --- common.Interactive
+"common.Interactive.duplicate" = "W"  # Duplicate
+"common.Interactive.measureTool" = "F7"  # Measure Tool
+"common.Interactive.pasteSpecial" = ""  # Paste Special...
+"common.Interactive.search" = "Alt+Y"  # Search
+"common.Interactive.undo" = "Back"  # Undo
+
+# --- common.SuiteControl
+"common.SuiteControl.listHotKeys" = "F1"  # List Hotkeys...
+"common.SuiteControl.openPreferences" = "F12"  # Preferences...
+
+# --- eeschema.EditorControl
+"eeschema.EditorControl.editLibSymbolWithSymbolEditor" = "Ctrl+Shift+D"  # Edit Library Symbol...
+"eeschema.EditorControl.editWithSymbolEditor" = "Ctrl+D"  # Edit with Symbol Editor
+"eeschema.EditorControl.highlightNet" = "E"  # Highlight Net
+"eeschema.EditorControl.nextNetItem" = ""  # Next Net Item
+"eeschema.EditorControl.schematicSetup" = "F2"  # Schematic Setup...
+"eeschema.EditorControl.showNetNavigator" = "4"  # Net Navigator
+"eeschema.EditorControl.showPcbNew" = "F6"  # Switch to PCB Editor
+
+# --- eeschema.InspectionTool
+"eeschema.InspectionTool.runERC" = "F4"  # Electrical Rules Checker
+
+# --- eeschema.InteractiveDrawing
+"eeschema.InteractiveDrawing.drawRectangle" = "3"  # Draw Rectangles
+"eeschema.InteractiveDrawing.drawRuleArea" = "#"  # Draw Rule Areas
+"eeschema.InteractiveDrawing.drawSheet" = "U"  # Draw Hierarchical Sheets
+"eeschema.InteractiveDrawing.placeBusWireEntry" = ""  # Place Wire to Bus Entries
+"eeschema.InteractiveDrawing.placeClassLabel" = "Ctrl+H"  # Place Directive Labels
+"eeschema.InteractiveDrawing.placeGlobalLabel" = "Ctrl+P"  # Place Global Labels
+"eeschema.InteractiveDrawing.placeHierarchicalLabel" = "J"  # Place Hierarchical Labels
+"eeschema.InteractiveDrawing.placeJunction" = ""  # Place Junctions
+"eeschema.InteractiveDrawing.placeLabel" = "P"  # Place Net Labels
+"eeschema.InteractiveDrawing.placeNoConnect" = "N"  # Place No Connect Flags
+"eeschema.InteractiveDrawing.placePowerSymbol" = "R"  # Place Power Symbols
+"eeschema.InteractiveDrawing.placeSchematicText" = "K"  # Draw Text
+"eeschema.InteractiveDrawing.placeSheetPin" = "5"  # Place Pins from Sheet
+"eeschema.InteractiveDrawing.syncAllSheetsPins" = "6"  # Sync All Sheet Pins...
+
+# --- eeschema.InteractiveDrawingLineWireBus
+"eeschema.InteractiveDrawingLineWireBus.drawBuses" = "2"  # Draw Buses
+"eeschema.InteractiveDrawingLineWireBus.drawLines" = "C"  # Draw Lines
+"eeschema.InteractiveDrawingLineWireBus.drawWires" = "Q"  # Draw Wires
+"eeschema.InteractiveDrawingLineWireBus.unfoldBus" = "G"  # Unfold from Bus
+
+# --- eeschema.InteractiveEdit
+"eeschema.InteractiveEdit.autoplaceFields" = "S"  # Autoplace Fields
+"eeschema.InteractiveEdit.editFootprint" = "Y"  # Edit Footprint...
+"eeschema.InteractiveEdit.editReference" = ""  # Edit Reference Designator...
+"eeschema.InteractiveEdit.editValue" = "D"  # Edit Value...
+"eeschema.InteractiveEdit.mirrorH" = "B"  # Mirror Horizontally
+"eeschema.InteractiveEdit.mirrorV" = "T"  # Mirror Vertically
+"eeschema.InteractiveEdit.properties" = ""  # Properties...
+"eeschema.InteractiveEdit.repeatDrawItem" = "\\"  # Repeat Last Item
+"eeschema.InteractiveEdit.rotateCCW" = "`"  # Rotate Counterclockwise
+"eeschema.InteractiveEdit.rotateCW" = ""  # Rotate Clockwise
+"eeschema.InteractiveEdit.swap" = ""  # Swap
+
+# --- eeschema.InteractiveMove
+"eeschema.InteractiveMove.drag" = "Tab"  # Drag
+"eeschema.InteractiveMove.move" = "1"  # Move
+
+# --- eeschema.InteractiveSelection
+"eeschema.InteractiveSelection.SelectConnection" = ""  # Select/Expand Connection
+
+# --- eeschema.Simulation
+"eeschema.Simulation.probe" = ""  # Probe Schematic...
+"eeschema.Simulation.tune" = ""  # Add Tuned Value...
+
+# --- pcbnew.AlignAndDistribute
+"pcbnew.AlignAndDistribute.alignBottom" = "Ctrl+Down"  # Align to Bottom
+"pcbnew.AlignAndDistribute.alignLeft" = "Ctrl+Left"  # Align to Left
+"pcbnew.AlignAndDistribute.alignRight" = "Ctrl+Right"  # Align to Right
+"pcbnew.AlignAndDistribute.alignTop" = "Ctrl+Up"  # Align to Top
+"pcbnew.AlignAndDistribute.distributeHorizontallyCenters" = "Ctrl+Shift+Right"  # Distribute Horizontally by Centers
+"pcbnew.AlignAndDistribute.distributeVerticallyCenters" = "Ctrl+Shift+Up"  # Distribute Vertically by Centers
+
+# --- pcbnew.Array
+"pcbnew.Array.createArray" = "Ctrl+K"  # Create Array...
+
+# --- pcbnew.Control
+"pcbnew.Control.layerNext" = "3"  # Switch to Next Layer
+"pcbnew.Control.layerPrev" = "2"  # Switch to Previous Layer
+"pcbnew.Control.layerToggle" = ""  # Toggle Layer
+"pcbnew.Control.ratsnestModeCycle" = "4"  # Ratsnest Mode (3-state)
+"pcbnew.Control.showLayersManager" = "B"  # Appearance
+
+# --- pcbnew.DRCTool
+"pcbnew.DRCTool.runDRC" = "F4"  # Design Rules Checker
+
+# --- pcbnew.EditorControl
+"pcbnew.EditorControl.boardSetup" = "F2"  # Board Setup...
+"pcbnew.EditorControl.clearHighlight" = ""  # Clear Net Highlighting
+"pcbnew.EditorControl.EditFpInFpEditor" = ""  # Open in Footprint Editor
+"pcbnew.EditorControl.highlightNet" = "E"  # Highlight Net
+"pcbnew.EditorControl.showEeschema" = "F6"  # Switch to Schematic Editor
+"pcbnew.EditorControl.trackWidthDec" = "F"  # Switch Track Width to Previous
+"pcbnew.EditorControl.trackWidthInc" = "G"  # Switch Track Width to Next
+"pcbnew.EditorControl.viaSizeDec" = "5"  # Decrease Via Size
+"pcbnew.EditorControl.viaSizeInc" = "T"  # Increase Via Size
+
+# --- pcbnew.InteractiveDrawing
+"pcbnew.InteractiveDrawing.line" = "C"  # Draw Lines
+"pcbnew.InteractiveDrawing.orthogonalDimension" = ""  # Draw Orthogonal Dimensions
+"pcbnew.InteractiveDrawing.text" = "K"  # Draw Text
+"pcbnew.InteractiveDrawing.via" = ""  # Place Vias
+
+# --- pcbnew.InteractiveEdit
+"pcbnew.InteractiveEdit.FindMove" = ""  # Get and Move Footprint
+"pcbnew.InteractiveEdit.flip" = "Y"  # Change Side / Flip
+"pcbnew.InteractiveEdit.properties" = "D"  # Properties...
+"pcbnew.InteractiveEdit.rotateCcw" = "`"  # Rotate Counterclockwise
+"pcbnew.InteractiveEdit.skip" = ""  # Skip
+"pcbnew.InteractiveEdit.swap" = ""  # Swap
+
+# --- pcbnew.InteractiveMove
+"pcbnew.InteractiveMove.move" = "1"  # Move
+
+# --- pcbnew.InteractiveRouter
+"pcbnew.InteractiveRouter.AttemptFinish" = ""  # Attempt Finish
+"pcbnew.InteractiveRouter.Autoroute" = ""  # Attempt Finish Selected (Autoroute)
+"pcbnew.InteractiveRouter.ContinueFromEnd" = "D"  # Route From Other End
+"pcbnew.InteractiveRouter.CustomTrackViaSize" = ""  # Custom Track/Via Size...
+"pcbnew.InteractiveRouter.DiffPair" = "Alt+Q"  # Route Differential Pair
+"pcbnew.InteractiveRouter.Drag45Degree" = "Tab"  # Drag 45 Degree Mode
+"pcbnew.InteractiveRouter.PlaceVia" = "S"  # Place Through Via
+"pcbnew.InteractiveRouter.SelLayerAndPlaceVia" = "Alt+S"  # Select Layer and Place Through Via...
+"pcbnew.InteractiveRouter.SingleTrack" = "Q"  # Route Single Track
+"pcbnew.InteractiveRouter.SwitchPosture" = ""  # Switch Track Posture
+
+# --- pcbnew.InteractiveSelection
+"pcbnew.InteractiveSelection.SelectConnection" = "Ctrl+E"  # Select/Expand Connection
+"pcbnew.InteractiveSelection.SelectNet" = "6"  # Select All Tracks in Net
+"pcbnew.InteractiveSelection.SelectUnconnected" = ""  # Select All Unconnected Footprints
+"pcbnew.InteractiveSelection.unrouteSelected" = "Ctrl+Q"  # Unroute Selected
+
+# --- pcbnew.lengthTuner
+"pcbnew.lengthTuner.AmplDecrease" = ""  # Decrease Amplitude
+"pcbnew.lengthTuner.AmplIncrease" = ""  # Increase Amplitude
+"pcbnew.lengthTuner.SpacingDecrease" = ""  # Decrease Spacing
+"pcbnew.lengthTuner.SpacingIncrease" = ""  # Increase Spacing
+
+# --- pcbnew.Multichannel
+"pcbnew.Multichannel.repeatLayout" = "\\"  # Repeat Layout...
+
+# --- pcbnew.ZoneFiller
+"pcbnew.ZoneFiller.zoneFillAll" = "N"  # Fill All Zones

@@ -1,0 +1,69 @@
+{
+  "defaults": {
+    "line_width": 0,
+    "pin_length": 100,
+    "pin_name_size": 50,
+    "pin_num_size": 50,
+    "text_size": 50
+  },
+  "drag_pins_along_with_edges": true,
+  "repeat": {
+    "label_delta": 1,
+    "pin_step": 100
+  },
+  "show_hidden_lib_fields": true,
+  "show_hidden_lib_pins": true,
+  "show_pin_electrical_type": true,
+  "window": {
+    "cursor": {
+      "always_show_cursor": true,
+      "cross_hair_mode": 0
+    },
+    "grid": {
+      "axes_enabled": true,
+      "fast_grid_1": 1,
+      "fast_grid_2": 2,
+      "last_size": 1,
+      "line_width": 1.0,
+      "min_spacing": 10.0,
+      "override_connected": true,
+      "override_connected_idx": 1,
+      "override_graphics": false,
+      "override_graphics_idx": 2,
+      "override_text": true,
+      "override_text_idx": 3,
+      "override_vias": false,
+      "override_vias_idx": 0,
+      "override_wires": true,
+      "override_wires_idx": 1,
+      "overrides_enabled": true,
+      "show": true,
+      "sizes": [
+        {
+          "name": "",
+          "x": "100 mil",
+          "y": "100 mil"
+        },
+        {
+          "name": "",
+          "x": "50 mil",
+          "y": "50 mil"
+        },
+        {
+          "name": "",
+          "x": "25 mil",
+          "y": "25 mil"
+        },
+        {
+          "name": "",
+          "x": "10 mil",
+          "y": "10 mil"
+        }
+      ],
+      "snap": 0,
+      "style": 0,
+      "user_grid_x": "",
+      "user_grid_y": ""
+    }
+  }
+}

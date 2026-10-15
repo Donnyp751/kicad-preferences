@@ -1,0 +1,120 @@
+{
+  "ERC": {
+    "crossprobe": true,
+    "scroll_on_crossprobe": true,
+    "show_all_errors": false
+  },
+  "annotation": {
+    "automatic": true,
+    "options": 1,
+    "recursive": true
+  },
+  "appearance": {
+    "color_theme": "_builtin_default",
+    "footprint_preview": true,
+    "show_hidden_fields": false,
+    "show_hidden_pins": false
+  },
+  "autoplace_fields": {
+    "align_to_grid": true,
+    "allow_rejustify": true,
+    "enable": true
+  },
+  "cross_probing": {
+    "auto_highlight": true,
+    "center_on_items": true,
+    "flash_selection": false,
+    "on_selection": true,
+    "zoom_to_fit": true
+  },
+  "drawing": {
+    "auto_start_wires": true,
+    "default_bus_thickness": 12,
+    "default_junction_size": 36,
+    "default_line_thickness": 6,
+    "default_repeat_offset_x": 0,
+    "default_repeat_offset_y": 100,
+    "default_sheet_background_color": "rgba(0, 0, 0, 0.000)",
+    "default_sheet_border_color": "rgba(0, 0, 0, 0.000)",
+    "default_text_size": 50,
+    "default_wire_thickness": 6,
+    "field_names": "",
+    "hop_over_size_choice": 0,
+    "junction_size_choice": 3,
+    "line_mode": 2,
+    "new_power_symbols": 0,
+    "pin_symbol_size": 25,
+    "repeat_label_increment": 1,
+    "text_offset_ratio": 0.08
+  },
+  "editing": {
+    "arc_edit_mode": 1
+  },
+  "input": {
+    "allow_unconstrained_pin_swaps": false,
+    "drag_is_move": false,
+    "esc_clears_net_highlight": true
+  },
+  "selection": {
+    "drag_net_collision_width": 4,
+    "draw_selected_children": true,
+    "fill_shapes": false,
+    "highlight_netclass_colors": false,
+    "highlight_netclass_colors_alpha": 0.6,
+    "highlight_netclass_colors_thickness": 15,
+    "highlight_thickness": 2,
+    "thickness": 3
+  },
+  "window": {
+    "cursor": {
+      "always_show_cursor": true,
+      "cross_hair_mode": 0
+    },
+    "grid": {
+      "axes_enabled": false,
+      "fast_grid_1": 1,
+      "fast_grid_2": 2,
+      "last_size": 1,
+      "line_width": 1.0,
+      "min_spacing": 10.0,
+      "override_connected": true,
+      "override_connected_idx": 1,
+      "override_graphics": false,
+      "override_graphics_idx": 2,
+      "override_text": true,
+      "override_text_idx": 3,
+      "override_vias": false,
+      "override_vias_idx": 0,
+      "override_wires": true,
+      "override_wires_idx": 1,
+      "overrides_enabled": true,
+      "show": true,
+      "sizes": [
+        {
+          "name": "",
+          "x": "100 mil",
+          "y": "100 mil"
+        },
+        {
+          "name": "",
+          "x": "50 mil",
+          "y": "50 mil"
+        },
+        {
+          "name": "",
+          "x": "25 mil",
+          "y": "25 mil"
+        },
+        {
+          "name": "",
+          "x": "10 mil",
+          "y": "10 mil"
+        }
+      ],
+      "snap": 0,
+      "style": 0,
+      "user_grid_x": "",
+      "user_grid_y": ""
+    }
+  }
+}

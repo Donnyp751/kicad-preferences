@@ -1,0 +1,329 @@
+# How actions map onto KiCad editor frames, how they are categorised for the
+# hotkey map, and which overlaps/gaps the checker should care about.
+
+# Frame id -> display name.  Actions with frames ["*"] in the catalog (all
+# common.* actions) apply to every frame listed in common_frames.
+[frames]
+sch = "Schematic Editor"
+symedit = "Symbol Editor"
+pcb = "PCB Editor"
+fpedit = "Footprint Editor"
+sim = "Simulator"
+"3d" = "3D Viewer"
+gerbview = "Gerber Viewer"
+pl = "Drawing Sheet Editor"
+kicad = "Project Manager"
+cvpcb = "Footprint Assignment"
+
+[common_frames]
+# The project manager only uses a handful of common actions (open/save/quit),
+# so common bindings are not checked against kicad.* actions.
+frames = ["sch", "symedit", "pcb", "fpedit", "sim", "3d", "gerbview", "pl", "cvpcb"]
+
+# Corrections where the catalog's source-reference heuristic is wrong.
+[frame_overrides]
+"eeschema.InteractiveEdit.rotateCW" = ["sch", "symedit"]
+"eeschema.InteractiveEdit.rotateCCW" = ["sch", "symedit"]
+"eeschema.InteractiveEdit.mirrorH" = ["sch", "symedit"]
+"eeschema.InteractiveEdit.mirrorV" = ["sch", "symedit"]
+"eeschema.InteractiveEdit.repeatDrawItem" = ["sch", "symedit"]
+"eeschema.InteractiveMove.move" = ["sch", "symedit"]
+"eeschema.EditorControl.editWithSymbolEditor" = ["sch"]
+"eeschema.EditorControl.editLibSymbolWithSymbolEditor" = ["sch"]
+
+# Tools whose actions only run while that tool is active (drawing, routing,
+# point editing).  Their keys may overlap global keys on purpose: the active
+# tool wins (ACTION_MANAGER::RunHotKey), so these are reported as "layered".
+[modal_tools]
+tools = [
+  "pcbnew.InteractiveRouter.UndoLastSegment",
+  "pcbnew.InteractiveRouter.PlaceVia",
+  "pcbnew.InteractiveRouter.PlaceBlindVia",
+  "pcbnew.InteractiveRouter.PlaceMicroVia",
+  "pcbnew.InteractiveRouter.SelLayerAndPlaceVia",
+  "pcbnew.InteractiveRouter.SelLayerAndPlaceBlindVia",
+  "pcbnew.InteractiveRouter.SelLayerAndPlaceMicroVia",
+  "pcbnew.InteractiveRouter.SwitchPosture",
+  "pcbnew.InteractiveRouter.CustomTrackViaSize",
+  "pcbnew.InteractiveRouter.AttemptFinish",
+  "pcbnew.InteractiveRouter.ContinueFromEnd",
+  "pcbnew.InteractiveDrawing.arcPosture",
+  "pcbnew.InteractiveDrawing.deleteLastPoint",
+  "pcbnew.InteractiveDrawing.incWidth",
+  "pcbnew.InteractiveDrawing.decWidth",
+  "pcbnew.InteractiveDrawing.closeOutline",
+  "pcbnew.InteractiveSelection.unrouteSegment",
+  "pcbnew.InteractiveEdit.skip",
+  "eeschema.InteractiveDrawingLineWireBus.undoLastSegment",
+  "eeschema.InteractiveDrawingLineWireBus.switchPosture",
+  "eeschema.InteractiveDrawing.deleteLastPoint",
+  "eeschema.InteractiveDrawing.closeOutline",
+  "common.Interactive.finish",
+  "common.Interactive.cycleArcEditMode",
+  "common.PointEditor",
+  "pcbnew.PointEditor",
+  "eeschema.PointEditor",
+  "common.Control.cursorClick",
+  "common.Control.cursorDblClick",
+]
+
+# Sets of actions allowed to share a key (mutually exclusive by state).
+[allowed_conflicts]
+groups = [
+  # explode is enabled for a custom pad, recombine while editing one
+  ["pcbnew.PadTool.explodePad", "pcbnew.PadTool.recombinePad", "pcbnew.InteractiveSelection.SelectConnection", "pcbnew.TableEditor.editTable"],
+  # simulator / symbol editor file commands live in their own windows
+  ["eeschema.Simulation.openWorkbook", "common.Control.open"],
+  ["eeschema.Simulation.saveWorkbook", "common.Control.save"],
+  ["eeschema.Simulation.saveWorkbookAs", "common.Control.saveAs", "eeschema.SymbolLibraryControl.saveLibraryAs"],
+  ["eeschema.Simulation.newAnalysisTab", "eeschema.SymbolLibraryControl.newSymbol", "common.Control.new"],
+  ["pcbnew.ModuleEditor.newFootprint", "common.Control.new"],
+  ["eeschema.SymbolLibraryControl.newSymbol", "common.Control.new"],
+  ["eeschema.SymbolLibraryControl.saveLibraryAs", "common.Control.saveAs"],
+  ["eeschema.Simulation.runSimulation", "eeschema.InteractiveDrawing.placePowerSymbol"],
+  # Backspace: undo is global, the drawing/router "undo last segment" variants are modal
+  ["common.Interactive.undo", "pcbnew.InteractiveSelection.unrouteSegment"],
+  # cursor-click helpers only fire when the canvas has focus and nothing else is bound
+  ["common.Control.cursorDblClick", "common.Control.zoomFitSelection"],
+]
+
+# Same purpose, same place: [schematic action, pcb action] that should share a key.
+[equivalents]
+pairs = [
+  ["eeschema.InteractiveMove.move", "pcbnew.InteractiveMove.move"],
+  ["eeschema.InteractiveMove.drag", "pcbnew.InteractiveRouter.Drag45Degree"],
+  ["eeschema.InteractiveEdit.rotateCCW", "pcbnew.InteractiveEdit.rotateCcw"],
+  ["eeschema.InteractiveEdit.rotateCW", "pcbnew.InteractiveEdit.rotateCw"],
+  ["eeschema.InteractiveEdit.properties", "pcbnew.InteractiveEdit.properties"],
+  ["eeschema.EditorControl.highlightNet", "pcbnew.EditorControl.highlightNet"],
+  ["eeschema.InteractiveDrawing.placeSymbol", "pcbnew.EditorControl.placeFootprint"],
+  ["eeschema.InteractiveDrawingLineWireBus.drawWires", "pcbnew.InteractiveRouter.SingleTrack"],
+  ["eeschema.InteractiveDrawingLineWireBus.drawLines", "pcbnew.InteractiveDrawing.line"],
+  ["eeschema.InteractiveDrawing.placeSchematicText", "pcbnew.InteractiveDrawing.text"],
+  ["eeschema.InspectionTool.runERC", "pcbnew.DRCTool.runDRC"],
+  ["eeschema.EditorControl.schematicSetup", "pcbnew.EditorControl.boardSetup"],
+  ["eeschema.EditorControl.showPcbNew", "pcbnew.EditorControl.showEeschema"],
+  ["eeschema.InteractiveSelection.SelectConnection", "pcbnew.InteractiveSelection.SelectConnection"],
+  ["eeschema.EditorControl.editWithSymbolEditor", "pcbnew.EditorControl.EditFpInFpEditor"],
+  ["eeschema.EditorControl.editLibSymbolWithSymbolEditor", "pcbnew.EditorControl.EditLibFpInFpEditor"],
+  ["eeschema.InteractiveEdit.swap", "pcbnew.InteractiveEdit.swap"],
+  ["eeschema.InteractiveEdit.repeatDrawItem", "pcbnew.Multichannel.repeatLayout"],
+  ["eeschema.InteractiveDrawing.placeDesignBlock", "pcbnew.InteractiveDrawing.placeDesignBlock"],
+  ["eeschema.InteractiveDrawing.drawRuleArea", "pcbnew.InteractiveDrawing.ruleArea"],
+  ["eeschema.InteractiveDrawing.drawRectangle", "pcbnew.InteractiveDrawing.rectangle"],
+  ["eeschema.Align.alignLeft", "pcbnew.AlignAndDistribute.alignLeft"],
+  ["eeschema.Align.alignRight", "pcbnew.AlignAndDistribute.alignRight"],
+  ["eeschema.Align.alignTop", "pcbnew.AlignAndDistribute.alignTop"],
+  ["eeschema.Align.alignBottom", "pcbnew.AlignAndDistribute.alignBottom"],
+]
+
+# Actions frequent enough that leaving them without a key is a gap.
+[must_bind]
+actions = [
+  # common
+  "common.Interactive.undo", "common.Interactive.redo", "common.Interactive.duplicate",
+  "common.Interactive.delete", "common.Interactive.group", "common.Interactive.ungroup",
+  "common.Control.showProperties", "common.Control.toggleUnits", "common.Interactive.measureTool",
+  "common.Control.gridFast1", "common.Control.gridFast2", "common.Control.zoomFitScreen",
+  "common.Control.zoomFitSelection", "common.Interactive.search", "common.Control.showDatasheet",
+  # schematic
+  "eeschema.InteractiveDrawing.placeSymbol", "eeschema.InteractiveDrawing.placePowerSymbol",
+  "eeschema.InteractiveDrawingLineWireBus.drawWires", "eeschema.InteractiveDrawingLineWireBus.drawBuses",
+  "eeschema.InteractiveDrawing.placeLabel", "eeschema.InteractiveDrawing.placeGlobalLabel",
+  "eeschema.InteractiveDrawing.placeHierarchicalLabel", "eeschema.InteractiveDrawing.placeNoConnect",
+  "eeschema.InteractiveDrawing.placeJunction", "eeschema.InteractiveDrawing.placeSchematicText",
+  "eeschema.InteractiveDrawing.drawSheet", "eeschema.InteractiveMove.move", "eeschema.InteractiveMove.drag",
+  "eeschema.InteractiveEdit.rotateCCW", "eeschema.InteractiveEdit.rotateCW", "eeschema.InteractiveEdit.mirrorH",
+  "eeschema.InteractiveEdit.mirrorV", "eeschema.InteractiveEdit.properties", "eeschema.InteractiveEdit.editValue",
+  "eeschema.InteractiveEdit.editReference", "eeschema.InteractiveEdit.editFootprint",
+  "eeschema.InteractiveEdit.autoplaceFields", "eeschema.InteractiveEdit.repeatDrawItem",
+  "eeschema.InteractiveEdit.swap", "eeschema.InteractiveSelection.SelectConnection",
+  "eeschema.EditorControl.highlightNet", "eeschema.EditorControl.clearHighlight",
+  "eeschema.EditorControl.annotate", "eeschema.InspectionTool.runERC", "eeschema.EditorControl.showPcbNew",
+  "eeschema.EditorControl.editWithSymbolEditor", "eeschema.NavigateTool.leaveSheet",
+  "eeschema.EditorTool.showHierarchy", "eeschema.EditorControl.setDNP",
+  "eeschema.InteractiveDrawing.placeNextSymbolUnit",
+  # symbol editor
+  "eeschema.SymbolDrawing.placeSymbolPin",
+  # pcb
+  "pcbnew.EditorControl.placeFootprint", "pcbnew.InteractiveRouter.SingleTrack", "pcbnew.InteractiveRouter.DiffPair",
+  "pcbnew.InteractiveRouter.Drag45Degree", "pcbnew.InteractiveRouter.DragFreeAngle",
+  "pcbnew.InteractiveRouter.PlaceVia", "pcbnew.InteractiveDrawing.via", "pcbnew.InteractiveRouter.RouteSelected",
+  "pcbnew.InteractiveMove.move", "pcbnew.InteractiveEdit.rotateCcw", "pcbnew.InteractiveEdit.rotateCw",
+  "pcbnew.InteractiveEdit.flip", "pcbnew.InteractiveEdit.properties", "pcbnew.InteractiveEdit.moveExact",
+  "pcbnew.PositionRelative.positionRelative", "pcbnew.InteractiveSelection.SelectConnection",
+  "pcbnew.EditorControl.highlightNet", "pcbnew.EditorControl.trackWidthInc", "pcbnew.EditorControl.trackWidthDec",
+  "pcbnew.EditorControl.viaSizeInc", "pcbnew.EditorControl.viaSizeDec", "pcbnew.Control.layerNext",
+  "pcbnew.Control.layerPrev", "pcbnew.Control.layerTop", "pcbnew.Control.layerBottom",
+  "pcbnew.ZoneFiller.zoneFillAll", "pcbnew.InteractiveDrawing.zone", "pcbnew.DRCTool.runDRC",
+  "pcbnew.EditorControl.showEeschema", "pcbnew.EditorControl.toggleLock", "pcbnew.EditorControl.EditFpInFpEditor",
+  "pcbnew.Control.ratsnestModeCycle", "pcbnew.InteractiveEdit.swap",
+  "pcbnew.InteractiveDrawing.line", "pcbnew.InteractiveDrawing.text", "pcbnew.Multichannel.repeatLayout",
+  "pcbnew.InteractiveRouter.CycleRouterMode",
+]
+
+# Display categories (colour + label) for the hotkey map.
+[categories.place]
+label = "Place"
+color = "#2563eb"
+[categories.draw]
+label = "Draw / Route"
+color = "#16a34a"
+[categories.edit]
+label = "Edit / Transform"
+color = "#dc2626"
+[categories.select]
+label = "Select"
+color = "#9333ea"
+[categories.view]
+label = "View / Zoom / Grid"
+color = "#ea580c"
+[categories.nav]
+label = "Layers / Navigate"
+color = "#0891b2"
+[categories.inspect]
+label = "Inspect / Net"
+color = "#ca8a04"
+[categories.file]
+label = "File / Project"
+color = "#64748b"
+[categories.other]
+label = "Other"
+color = "#78716c"
+
+# Longest matching prefix wins; a key starting with "~" is a regex on the id.
+[category_rules]
+"common.Control" = "view"
+"common.Control.save" = "file"
+"common.Control.saveAs" = "file"
+"common.Control.saveAll" = "file"
+"common.Control.open" = "file"
+"common.Control.new" = "file"
+"common.Control.plot" = "file"
+"common.Control.print" = "file"
+"common.Control.pageSettings" = "file"
+"common.Control.quit" = "file"
+"common.Control.updatePcbFromSchematic" = "file"
+"common.Control.updateSchematicFromPcb" = "file"
+"common.Control.showDatasheet" = "inspect"
+"common.Control.showProperties" = "view"
+"common.Control.libraryTreeSearch" = "select"
+"common.Control.resetLocalCoords" = "edit"
+"common.Control.toggleUnits" = "view"
+"common.Control.cursorUp" = "nav"
+"common.Control.cursorDown" = "nav"
+"common.Control.cursorLeft" = "nav"
+"common.Control.cursorRight" = "nav"
+"common.Control.panUp" = "nav"
+"common.Control.panDown" = "nav"
+"common.Control.panLeft" = "nav"
+"common.Control.panRight" = "nav"
+"common.Interactive" = "edit"
+"common.Interactive.find" = "select"
+"common.Interactive.findAndReplace" = "select"
+"common.Interactive.findNext" = "select"
+"common.Interactive.findPrevious" = "select"
+"common.Interactive.findNextMarker" = "inspect"
+"common.Interactive.search" = "select"
+"common.Interactive.selectAll" = "select"
+"common.Interactive.unselectAll" = "select"
+"common.Interactive.measureTool" = "inspect"
+"common.InteractiveSelection" = "select"
+"common.SuiteControl" = "file"
+"common" = "other"
+"eeschema.InteractiveDrawing" = "place"
+"eeschema.InteractiveDrawing.drawRectangle" = "draw"
+"eeschema.InteractiveDrawing.drawCircle" = "draw"
+"eeschema.InteractiveDrawing.drawArc" = "draw"
+"eeschema.InteractiveDrawing.drawBezier" = "draw"
+"eeschema.InteractiveDrawing.drawRuleArea" = "draw"
+"eeschema.InteractiveDrawing.drawTable" = "draw"
+"eeschema.InteractiveDrawingLineWireBus" = "draw"
+"eeschema.SymbolDrawing" = "place"
+"eeschema.InteractiveEdit" = "edit"
+"eeschema.InteractiveMove" = "edit"
+"eeschema.Align" = "edit"
+"eeschema.AlignToGrid" = "edit"
+"eeschema.InteractiveSelection" = "select"
+"eeschema.NavigateTool" = "nav"
+"eeschema.EditorTool" = "nav"
+"eeschema.InspectionTool" = "inspect"
+"eeschema.EditorControl" = "file"
+"eeschema.EditorControl.highlightNet" = "inspect"
+"eeschema.EditorControl.clearHighlight" = "inspect"
+"eeschema.EditorControl.highlightNetTool" = "inspect"
+"eeschema.EditorControl.showNetNavigator" = "inspect"
+"eeschema.EditorControl.nextNetItem" = "inspect"
+"eeschema.EditorControl.previousNetItem" = "inspect"
+"eeschema.EditorControl.lineModeNext" = "draw"
+"eeschema.EditorControl.lineModeFree" = "draw"
+"eeschema.EditorControl.lineMode45" = "draw"
+"eeschema.EditorControl.lineModeOrthonal" = "draw"
+"eeschema.EditorControl.setDNP" = "edit"
+"eeschema.EditorControl.nextUnit" = "nav"
+"eeschema.EditorControl.previousUnit" = "nav"
+"eeschema.EditorControl.showHiddenPins" = "view"
+"eeschema.EditorControl.showHiddenFields" = "view"
+"eeschema.EditorControl.importGraphics" = "place"
+"eeschema.SymbolLibraryControl" = "file"
+"eeschema.Simulation" = "file"
+"eeschema" = "other"
+"pcbnew.InteractiveRouter" = "draw"
+"pcbnew.InteractiveRouter.PlaceVia" = "place"
+"pcbnew.InteractiveRouter.PlaceBlindVia" = "place"
+"pcbnew.InteractiveRouter.PlaceMicroVia" = "place"
+"pcbnew.InteractiveRouter.SelLayerAndPlaceVia" = "place"
+"pcbnew.InteractiveRouter.SelLayerAndPlaceBlindVia" = "place"
+"pcbnew.InteractiveRouter.SelLayerAndPlaceMicroVia" = "place"
+"pcbnew.InteractiveRouter.Drag45Degree" = "edit"
+"pcbnew.InteractiveRouter.DragFreeAngle" = "edit"
+"pcbnew.LengthTuner" = "draw"
+"pcbnew.lengthTuner" = "draw"
+"pcbnew.InteractiveDrawing" = "draw"
+"pcbnew.InteractiveDrawing.text" = "place"
+"pcbnew.InteractiveDrawing.via" = "place"
+"pcbnew.InteractiveDrawing.placeDesignBlock" = "place"
+"pcbnew.InteractiveDrawing.placeImportedGraphics" = "place"
+"pcbnew.InteractiveDrawing.setAnchor" = "edit"
+"pcbnew.InteractiveEdit" = "edit"
+"pcbnew.InteractiveMove" = "edit"
+"pcbnew.AlignAndDistribute" = "edit"
+"pcbnew.Array" = "edit"
+"pcbnew.PositionRelative" = "edit"
+"pcbnew.Multichannel" = "edit"
+"pcbnew.PointEditor" = "edit"
+"pcbnew.PadTool" = "edit"
+"pcbnew.GlobalEdit" = "edit"
+"pcbnew.InteractiveSelection" = "select"
+"pcbnew.InteractiveSelection.unrouteSelected" = "edit"
+"pcbnew.InteractiveSelection.unrouteSegment" = "edit"
+"pcbnew.Control" = "view"
+"pcbnew.Control.layer" = "nav"
+"~^pcbnew\\.Control\\.layer" = "nav"
+"pcbnew.Control.changeTrackLayerNext" = "nav"
+"pcbnew.Control.changeTrackLayerPrev" = "nav"
+"pcbnew.Control.layerPairPresetCycle" = "nav"
+"pcbnew.Control.showLayersManager" = "view"
+"pcbnew.Control.showNetInspector" = "inspect"
+"pcbnew.EditorControl" = "file"
+"pcbnew.EditorControl.placeFootprint" = "place"
+"pcbnew.EditorControl.highlightNet" = "inspect"
+"pcbnew.EditorControl.toggleNetHighlight" = "inspect"
+"pcbnew.EditorControl.clearHighlight" = "inspect"
+"pcbnew.EditorControl.highlightNetTool" = "inspect"
+"pcbnew.EditorControl.toggleLock" = "edit"
+"pcbnew.EditorControl.trackWidthInc" = "draw"
+"pcbnew.EditorControl.trackWidthDec" = "draw"
+"pcbnew.EditorControl.viaSizeInc" = "draw"
+"pcbnew.EditorControl.viaSizeDec" = "draw"
+"pcbnew.EditorControl.lineModeNext" = "draw"
+"pcbnew.ZoneFiller" = "draw"
+"pcbnew.DRCTool" = "inspect"
+"pcbnew.InspectionTool" = "inspect"
+"pcbnew.ModuleEditor" = "file"
+"pcbnew" = "other"
+"3DViewer" = "view"
+"kicad" = "file"
+"gerbview" = "view"
+"plEditor" = "other"
+"cvpcb" = "other"
