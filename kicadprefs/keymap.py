@@ -31,6 +31,8 @@ class Contexts:
     allow: list[set[str]]
     equivalents: list[tuple[str, str]]
     must_bind: list[str]
+    mnemonics: dict[str, str] = field(default_factory=dict)
+    labels: dict[str, str] = field(default_factory=dict)
 
     @classmethod
     def load(cls, path: Path) -> "Contexts":
@@ -46,6 +48,8 @@ class Contexts:
             allow=[set(x) for x in d.get("allowed_conflicts", {}).get("groups", [])],
             equivalents=[tuple(x) for x in d.get("equivalents", {}).get("pairs", [])],
             must_bind=d.get("must_bind", {}).get("actions", []),
+            mnemonics=d.get("menu_mnemonics", {}),
+            labels=d.get("labels", {}),
         )
 
     def category(self, action_id: str) -> str:
@@ -194,6 +198,19 @@ def layered(m: Model) -> list[dict]:
     return out
 
 
+def mnemonic_clashes(m: Model) -> list[dict]:
+    """Alt+<letter> bindings that a GTK menu-bar mnemonic would swallow."""
+    out = []
+    for aid, (p, a) in m.effective.items():
+        for k in {p, a} - {""}:
+            parsed = keys.parse(k)
+            if parsed and parsed.mods == ("Alt",) and len(parsed.base) == 1:
+                frames = [f for f in m.frames_of(aid) if parsed.base in m.ctx.mnemonics.get(f, "")]
+                if frames:
+                    out.append({"action": aid, "key": k, "frames": frames})
+    return out
+
+
 def equivalence_report(m: Model) -> list[dict]:
     out = []
     for a, b in m.ctx.equivalents:
@@ -212,7 +229,7 @@ def unbound_must(m: Model) -> list[str]:
 
 def unknown_refs(m: Model) -> list[str]:
     ids = list(m.ctx.must_bind) + [x for p in m.ctx.equivalents for x in p] + \
-        [x for g in m.ctx.allow for x in g] + list(m.ctx.frame_overrides)
+        [x for g in m.ctx.allow for x in g] + list(m.ctx.frame_overrides) + list(m.ctx.labels)
     return sorted({i for i in ids if i not in m.catalog})
 
 

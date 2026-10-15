@@ -129,3 +129,21 @@ class RepoKeymapTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class DocsTest(unittest.TestCase):
+    def test_render_embeds_data(self):
+        import json
+        import re
+
+        from kicadprefs import docs
+        cat = catalog.load(REPO / "catalog" / "kicad-10.0.json")
+        ctx = keymap.Contexts.load(REPO / "keymap" / "contexts.toml")
+        m = keymap.effective_from_keymap(cat, keymap.Keymap.load(REPO / "keymap" / "keymap.toml"), ctx)
+        html = docs.render(m, "10.0")
+        blob = re.search(r"const DATA = (.*?);\n", html).group(1)
+        data = json.loads(blob)
+        via = next(a for a in data["actions"] if a["id"] == "pcbnew.InteractiveDrawing.via")
+        self.assertEqual(via["binds"][0]["mods"], ["Ctrl", "Shift"])
+        tilde = next(a for a in data["actions"] if a["key"] == "~")
+        self.assertEqual(tilde["binds"][0], {"k": "~", "mods": ["Shift"], "base": "`"})

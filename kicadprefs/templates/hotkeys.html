@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KiCad Hotkey Map</title>
+<style>
+:root {
+  --bg: #f6f7f9; --panel: #ffffff; --ink: #1c2230; --muted: #667085; --line: #d9dee7;
+  --cap: #fbfcfd; --cap-edge: #c9d0db; --cap-empty: #eef1f5; --accent: #2563eb; --glow: #f59e0b;
+  --mod-on: #1d4ed8; --chip: #eef2f7; --danger: #dc2626; --ok: #16a34a;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #11151c; --panel: #171c25; --ink: #e6e9ef; --muted: #98a2b3; --line: #2a3140;
+    --cap: #1f2632; --cap-edge: #343d4e; --cap-empty: #161b23; --accent: #60a5fa; --glow: #fbbf24;
+    --mod-on: #3b82f6; --chip: #222a37;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #11151c; --panel: #171c25; --ink: #e6e9ef; --muted: #98a2b3; --line: #2a3140;
+  --cap: #1f2632; --cap-edge: #343d4e; --cap-empty: #161b23; --accent: #60a5fa; --glow: #fbbf24;
+  --mod-on: #3b82f6; --chip: #222a37;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink);
+  font: 14px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+header { position: sticky; top: 0; z-index: 5; background: var(--panel); border-bottom: 1px solid var(--line);
+  padding: 10px 16px; display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; }
+h1 { font-size: 17px; margin: 0; white-space: nowrap; }
+h1 small { color: var(--muted); font-weight: 400; }
+.tabs { display: flex; flex-wrap: wrap; gap: 4px; }
+.tabs button, .layers button, .seg button {
+  border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 7px;
+  padding: 5px 10px; font: inherit; cursor: pointer; }
+.tabs button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+#search { flex: 1 1 260px; min-width: 200px; padding: 7px 10px; border-radius: 8px; border: 1px solid var(--line);
+  background: var(--bg); color: var(--ink); font: inherit; }
+main { padding: 14px 16px 40px; max-width: 1500px; margin: 0 auto; }
+.toolbar { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; margin-bottom: 10px; }
+.layers { display: flex; flex-wrap: wrap; gap: 4px; }
+.layers button { position: relative; }
+.layers button[aria-pressed="true"] { background: var(--mod-on); border-color: var(--mod-on); color: #fff; }
+.layers button .n { font-size: 11px; opacity: .75; margin-left: 4px; }
+.layers button .hit { position: absolute; top: -7px; right: -7px; background: var(--glow); color: #111;
+  border-radius: 9px; font-size: 10px; padding: 0 5px; font-weight: 700; }
+label.tog { display: inline-flex; gap: 5px; align-items: center; color: var(--muted); cursor: pointer; user-select: none; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 12px; font-size: 12px; color: var(--muted); }
+.legend span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 3px;
+  background: var(--c); margin-right: 5px; vertical-align: -1px; }
+
+/* keyboard */
+.kbwrap { overflow-x: auto; padding-bottom: 6px; }
+.kb { display: flex; gap: 18px; min-width: 1260px; }
+.kb .block { display: flex; flex-direction: column; gap: 5px; }
+.kb .row { display: flex; gap: 5px; height: 62px; }
+.kb .row.f { height: 50px; margin-bottom: 8px; }
+.kb .gap { flex: 0 0 auto; }
+.cap { position: relative; border: 1px solid var(--cap-edge); border-bottom-width: 3px; border-radius: 7px;
+  background: var(--cap-empty); padding: 3px 5px; overflow: hidden; cursor: default; display: flex;
+  flex-direction: column; justify-content: flex-end; }
+.cap .lg { position: absolute; top: 2px; left: 5px; font-size: 11px; color: var(--muted); font-weight: 600; }
+.cap .act { font-size: 10px; line-height: 1.15; font-weight: 600; color: var(--c, var(--ink)); overflow-wrap: anywhere;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.cap.bound { background: var(--cap); cursor: pointer; box-shadow: inset 0 3px 0 var(--c); }
+.cap.bound:hover { outline: 2px solid var(--accent); }
+.cap.modal-only { border-style: dashed; }
+.cap .more { position: absolute; top: 2px; right: 4px; font-size: 9.5px; color: var(--muted); }
+.cap .chg { position: absolute; top: 4px; right: 4px; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+.cap.mod { background: var(--chip); justify-content: center; align-items: center; cursor: pointer; font-weight: 600;
+  color: var(--muted); }
+.cap.mod.on { background: var(--mod-on); color: #fff; border-color: var(--mod-on); }
+.cap.hit { outline: 3px solid var(--glow); outline-offset: -1px; }
+.cap.dim { opacity: .35; }
+.cap.ghost .act { color: var(--muted); font-style: italic; }
+
+/* detail + tables */
+.grid2 { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 16px; margin-top: 14px; align-items: start; }
+@media (max-width: 1000px) { .grid2 { grid-template-columns: 1fr; } }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+.panel h2 { font-size: 14px; margin: 0 0 8px; }
+#detail .item { border-top: 1px solid var(--line); padding: 8px 0; }
+#detail .item:first-of-type { border-top: 0; }
+.muted { color: var(--muted); }
+.why { font-size: 12px; color: var(--muted); border-left: 3px solid var(--accent); padding-left: 7px; margin-top: 4px; }
+kbd { font: 600 11.5px ui-monospace, SFMono-Regular, Menlo, monospace; background: var(--chip);
+  border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; padding: 1px 5px; white-space: nowrap; }
+table { width: 100%; border-collapse: collapse; }
+th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 12px; color: var(--muted); font-weight: 600; cursor: pointer; user-select: none; position: sticky; top: 0; background: var(--panel); }
+td .id { font: 11px ui-monospace, monospace; color: var(--muted); }
+.cat { display: inline-block; font-size: 11px; padding: 0 6px; border-radius: 9px; color: #fff; background: var(--c); white-space: nowrap; }
+.badge { font-size: 10.5px; padding: 0 5px; border-radius: 4px; border: 1px solid var(--line); color: var(--muted); margin-left: 4px; }
+.badge.chg { border-color: var(--accent); color: var(--accent); }
+s { color: var(--muted); }
+.tablewrap { max-height: 70vh; overflow: auto; }
+.ok { color: var(--ok); } .bad { color: var(--danger); }
+details summary { cursor: pointer; font-weight: 600; }
+.footer { color: var(--muted); font-size: 12px; margin-top: 18px; }
+@media print {
+  header .tabs, #search, .toolbar label, .noprint, #detail { display: none !important; }
+  header { position: static; }
+  body { background: #fff; }
+  .grid2 { grid-template-columns: 1fr; }
+  .tablewrap { max-height: none; overflow: visible; }
+  .kb { min-width: 0; transform-origin: top left; }
+  .printlayer { break-inside: avoid; margin-bottom: 14px; }
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>KiCad Hotkey Map <small id="ver"></small></h1>
+  <nav class="tabs" id="tabs" aria-label="Editor"></nav>
+  <input id="search" type="search" placeholder="Search actions, descriptions, keys…  ( / )" autocomplete="off">
+  <button class="noprint" id="theme" title="Toggle theme" style="border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:7px;padding:5px 9px;cursor:pointer">◐</button>
+</header>
+<main>
+  <div class="toolbar">
+    <div class="layers" id="layers" aria-label="Modifier layer"></div>
+    <label class="tog"><input type="checkbox" id="showDefaults"> KiCad defaults</label>
+    <label class="tog"><input type="checkbox" id="changedOnly"> Changed only</label>
+    <label class="tog"><input type="checkbox" id="showUnbound"> List unbound</label>
+    <button class="noprint" id="printAll" style="border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:7px;padding:5px 10px;cursor:pointer">Print all layers</button>
+  </div>
+  <div class="legend" id="legend"></div>
+  <div class="kbwrap" id="kbwrap" style="margin-top:10px"></div>
+  <div id="printlayers"></div>
+
+  <div class="grid2">
+    <section class="panel">
+      <h2 id="tabletitle">Bindings</h2>
+      <div class="tablewrap"><table id="table"><thead><tr>
+        <th data-sort="key">Key</th><th data-sort="name">Action</th><th data-sort="cat">Category</th><th data-sort="def">KiCad default</th>
+      </tr></thead><tbody></tbody></table></div>
+    </section>
+    <aside>
+      <section class="panel" id="detail"><h2>Key details</h2><p class="muted">Click a key to see every action bound to it in this editor. Hold Shift / Ctrl / Alt to switch layers.</p></section>
+      <section class="panel" style="margin-top:16px" id="health"></section>
+    </aside>
+  </div>
+  <p class="footer" id="footer"></p>
+</main>
+<script>
+const DATA = /*__DATA__*/null;
+
+// ---------------------------------------------------------------- keyboard geometry (US ANSI)
+const U = 62; // px per key unit
+const MAIN = [
+  [["Esc","Esc"],[null,1],["F1"],["F2"],["F3"],["F4"],[null,.5],["F5"],["F6"],["F7"],["F8"],[null,.5],["F9"],["F10"],["F11"],["F12"]],
+  [["`"],["1"],["2"],["3"],["4"],["5"],["6"],["7"],["8"],["9"],["0"],["-"],["="],["Back","Backspace",2]],
+  [["Tab","Tab",1.5],["Q"],["W"],["E"],["R"],["T"],["Y"],["U"],["I"],["O"],["P"],["["],["]"],["\\","\\",1.5]],
+  [["#Caps","Caps",1.75],["A"],["S"],["D"],["F"],["G"],["H"],["J"],["K"],["L"],[";"],["'"],["Return","Enter",2.25]],
+  [["#Shift","Shift",2.25],["Z"],["X"],["C"],["V"],["B"],["N"],["M"],[","],["."],["/"],["#Shift","Shift",2.75]],
+  [["#Ctrl","Ctrl",1.5],["#Win","Super",1.25],["#Alt","Alt",1.25],["Space","Space",6.25],["#Alt","Alt",1.25],["#Win","Super",1.25],["#Ctrl","Ctrl",1.5]],
+];
+const NAV = [
+  [["Ins","Insert"],["Home"],["PgUp"]],
+  [["Del","Delete"],["End"],["PgDn"]],
+  [[null,3]], [[null,1],["Up","↑"]], [["Left","←"],["Down","↓"],["Right","→"]],
+];
+const LAYERS = [[], ["Shift"], ["Ctrl"], ["Alt"], ["Ctrl","Shift"], ["Ctrl","Alt"], ["Alt","Shift"], ["Ctrl","Alt","Shift"]];
+const layerName = l => l.length ? l.join("+") : "Base";
+
+// ---------------------------------------------------------------- state
+const state = { tab: "sch", layer: [], q: "", defaults: false, changedOnly: false, unbound: false,
+                sort: "key", selKey: null };
+try { const s = JSON.parse(localStorage.getItem("kicad-hotkeys") || "{}"); if (s.tab) state.tab = s.tab; } catch {}
+if (DATA.tabs.some(t => "#" + t.id === location.hash)) state.tab = location.hash.slice(1);
+const save = () => {
+  try { localStorage.setItem("kicad-hotkeys", JSON.stringify({ tab: state.tab })); } catch {}
+  if (location.hash !== "#" + state.tab) history.replaceState(null, "", "#" + state.tab);
+};
+
+const cats = DATA.categories;
+const catColor = c => (cats[c] || cats.other || { color: "#888" }).color;
+const catLabel = c => (cats[c] || { label: c }).label;
+const inTab = (a, tab) => a.frames[0] === "*" ? DATA.commonFrames.includes(tab) : a.frames.includes(tab);
+const sameMods = (a, b) => a.length === b.length && a.every(x => b.includes(x));
+const bindsOf = a => state.defaults ? a.defBinds : a.binds;
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+function matches(a) {
+  if (!state.q) return true;
+  const hay = (a.name + " " + a.tip + " " + a.id + " " + a.key + " " + a.alt + " " + a.label + " " + catLabel(a.cat)).toLowerCase();
+  return state.q.toLowerCase().split(/\s+/).filter(Boolean).every(t => hay.includes(t));
+}
+const changed = a => a.key !== a.def || a.alt !== a.defAlt;
+
+function tabActions() { return DATA.actions.filter(a => inTab(a, state.tab)); }
+
+// map: layerName -> base -> [actions]
+function keyIndex(actions) {
+  const idx = {};
+  for (const a of actions) for (const b of bindsOf(a)) {
+    const ln = layerName(b.mods), base = b.base.length === 1 ? b.base.toUpperCase() : b.base;
+    ((idx[ln] ||= {})[base] ||= []).push(a);
+  }
+  for (const ln in idx) for (const k in idx[ln])
+    idx[ln][k].sort((x, y) => (x.modal - y.modal) || (x.frames[0] === "*") - (y.frames[0] === "*"));
+  return idx;
+}
+
+// ---------------------------------------------------------------- rendering
+function renderTabs() {
+  const el = document.getElementById("tabs");
+  el.innerHTML = DATA.tabs.map(t => `<button data-tab="${t.id}" aria-pressed="${t.id === state.tab}">${esc(t.label)}</button>`).join("");
+}
+
+function capHTML(def, idx, layer, hitSet) {
+  const [id, label, w = 1] = def;
+  if (id === null) return `<div class="gap" style="width:${label * U}px"></div>`;
+  const width = w * U + (w - 1) * 5;
+  if (id.startsWith("#")) {
+    const m = id.slice(1), on = layer.includes(m);
+    const clickable = ["Shift", "Ctrl", "Alt"].includes(m);
+    return `<div class="cap mod${on ? " on" : ""}" ${clickable ? `data-mod="${m}"` : ""} style="width:${width}px">${esc(label)}</div>`;
+  }
+  const acts = (idx[layerName(layer)] || {})[id] || [];
+  const lg = esc(label || id);
+  if (!acts.length) return `<div class="cap${state.q ? " dim" : ""}" style="width:${width}px"><span class="lg">${lg}</span></div>`;
+  const a = acts[0];
+  const hit = hitSet.has(id);
+  const modalOnly = acts.every(x => x.modal);
+  const cls = ["cap", "bound", hit ? "hit" : "", state.q && !hit ? "dim" : "", modalOnly ? "modal-only" : "", state.defaults ? "ghost" : ""].join(" ");
+  const title = acts.map(x => `${x.name}${x.modal ? " (while tool active)" : ""}`).join("\n");
+  return `<div class="${cls}" data-key="${esc(id)}" style="width:${width}px;--c:${catColor(a.cat)}" title="${esc(title)}">
+    <span class="lg">${lg}</span>${acts.length > 1 ? `<span class="more">+${acts.length - 1}</span>` : (!state.defaults && acts.some(changed) ? `<span class="chg"></span>` : "")}
+    <span class="act">${esc(a.label)}</span></div>`;
+}
+
+function keyboardHTML(layer, idx, hitSet) {
+  const rows = (defs, f) => defs.map((r, i) => `<div class="row${f && i === 0 ? " f" : ""}">${r.map(d => capHTML(d, idx, layer, hitSet)).join("")}</div>`).join("");
+  const nav = `<div class="row f" style="visibility:hidden"></div>` + rows(NAV.slice(0, 2)) +
+    `<div class="row"></div>` + rows(NAV.slice(3));
+  return `<div class="kb"><div class="block">${rows(MAIN, true)}</div><div class="block">${nav}</div></div>`;
+}
+
+function hits(actions) {
+  const res = {};
+  if (!state.q) return res;
+  for (const a of actions) if (matches(a)) for (const b of bindsOf(a)) {
+    const ln = layerName(b.mods), base = b.base.length === 1 ? b.base.toUpperCase() : b.base;
+    (res[ln] ||= new Set()).add(base);
+  }
+  return res;
+}
+
+function render() {
+  save();
+  const acts = tabActions();
+  const idx = keyIndex(acts);
+  const hs = hits(acts);
+  // layers
+  document.getElementById("layers").innerHTML = LAYERS.map(l => {
+    const n = Object.values(idx[layerName(l)] || {}).length;
+    if (!n && l.length > 1 && !sameMods(l, state.layer)) return "";
+    const h = hs[layerName(l)]?.size;
+    return `<button data-layer="${l.join(",")}" aria-pressed="${sameMods(l, state.layer)}">${layerName(l)}<span class="n">${n}</span>${h ? `<span class="hit">${h}</span>` : ""}</button>`;
+  }).join("");
+  document.getElementById("kbwrap").innerHTML = keyboardHTML(state.layer, idx, hs[layerName(state.layer)] || new Set());
+  renderTable(acts);
+  renderDetail(acts, idx);
+  renderHealth();
+}
+
+function renderTable(acts) {
+  let rows = acts.filter(a => matches(a) && (state.unbound || bindsOf(a).length) && (!state.changedOnly || changed(a)));
+  const keyOf = a => state.defaults ? a.def : a.key;
+  const cmp = { key: (x, y) => (keyOf(x) || "~~").localeCompare(keyOf(y) || "~~") || x.name.localeCompare(y.name),
+                name: (x, y) => x.name.localeCompare(y.name), cat: (x, y) => x.cat.localeCompare(y.cat) || x.name.localeCompare(y.name),
+                def: (x, y) => (x.def || "~~").localeCompare(y.def || "~~") }[state.sort];
+  rows.sort(cmp);
+  const tab = DATA.tabs.find(t => t.id === state.tab).label;
+  document.getElementById("tabletitle").textContent = `${tab}: ${rows.length} action${rows.length === 1 ? "" : "s"}`;
+  const kb = (k, alt) => [k, alt].filter(Boolean).map(x => `<kbd>${esc(x)}</kbd>`).join(" ") || `<span class="muted">—</span>`;
+  document.querySelector("#table tbody").innerHTML = rows.map(a => `<tr>
+    <td>${state.defaults ? kb(a.def, a.defAlt) : kb(a.key, a.alt)}</td>
+    <td>${esc(a.name)}${a.frames[0] === "*" ? `<span class="badge">common</span>` : ""}${a.modal ? `<span class="badge">in tool</span>` : ""}${changed(a) ? `<span class="badge chg">changed</span>` : ""}
+      ${a.tip ? `<div class="muted" style="font-size:12px">${esc(a.tip)}</div>` : ""}
+      ${a.why ? `<div class="why">${esc(a.why)}</div>` : ""}<div class="id">${esc(a.id)}</div></td>
+    <td><span class="cat" style="--c:${catColor(a.cat)}">${esc(catLabel(a.cat))}</span></td>
+    <td>${changed(a) ? `<s>${[a.def, a.defAlt].filter(Boolean).map(esc).join(" / ") || "—"}</s>` : `<span class="muted">same</span>`}</td></tr>`).join("");
+}
+
+function renderDetail(acts, idx) {
+  const el = document.getElementById("detail");
+  if (!state.selKey) return;
+  const ln = layerName(state.layer);
+  const list = (idx[ln] || {})[state.selKey] || [];
+  const combo = [...state.layer, state.selKey].join("+");
+  el.innerHTML = `<h2><kbd>${esc(combo)}</kbd> in ${esc(DATA.tabs.find(t => t.id === state.tab).label)}</h2>` +
+    (list.length ? list.map(a => `<div class="item"><span class="cat" style="--c:${catColor(a.cat)}">${esc(catLabel(a.cat))}</span>
+      <b>${esc(a.name)}</b>${a.modal ? `<span class="badge">only while its tool is active</span>` : ""}
+      ${a.tip ? `<div class="muted">${esc(a.tip)}</div>` : ""}
+      <div style="font-size:12px;margin-top:3px">Default: ${a.def ? `<kbd>${esc(a.def)}</kbd>` : "unbound"}${a.alt ? ` · Alt: <kbd>${esc(a.alt)}</kbd>` : ""}</div>
+      ${a.why ? `<div class="why">${esc(a.why)}</div>` : ""}<div class="id muted" style="font:11px ui-monospace,monospace">${esc(a.id)}</div></div>`).join("")
+      : `<p class="muted">Nothing bound.</p>`);
+}
+
+function renderHealth() {
+  const el = document.getElementById("health");
+  const confl = DATA.conflicts.filter(c => c.frames.includes(state.tab));
+  const eq = DATA.equivalents;
+  const okEq = eq.filter(e => e.ka === e.kb).length;
+  el.innerHTML = `<h2>Consistency</h2>
+    <p>${confl.length ? `<span class="bad">${confl.length} conflict(s) in this editor</span>` : `<span class="ok">✓ No hotkey conflicts in this editor</span>`}</p>
+    ${confl.map(c => `<div><kbd>${esc(c.key)}</kbd> ${c.actions.map(esc).join(" · ")}</div>`).join("")}
+    <details><summary>Same purpose, same place — ${okEq}/${eq.length} schematic↔PCB pairs share a key</summary>
+    <table style="margin-top:6px">${eq.map(e => `<tr><td class="${e.ka === e.kb ? "ok" : "bad"}">${e.ka === e.kb ? "✓" : "✗"}</td>
+      <td>${esc(e.na)}</td><td><kbd>${esc(e.ka || "—")}</kbd></td><td><kbd>${esc(e.kb || "—")}</kbd></td><td>${esc(e.nb)}</td></tr>`).join("")}</table></details>`;
+}
+
+function renderLegend() {
+  document.getElementById("legend").innerHTML = Object.entries(cats).map(([k, v]) => `<span style="--c:${v.color}">${esc(v.label)}</span>`).join("") +
+    `<span class="muted" style="--c:transparent">dashed = only while a tool is active · dot = changed from KiCad default · +n = more actions on key</span>`;
+}
+
+function printAll() {
+  const acts = tabActions(), idx = keyIndex(acts);
+  const el = document.getElementById("printlayers");
+  el.innerHTML = LAYERS.filter(l => Object.keys(idx[layerName(l)] || {}).length).map(l =>
+    `<div class="printlayer"><h3>${esc(DATA.tabs.find(t => t.id === state.tab).label)} — ${layerName(l)}</h3>${keyboardHTML(l, idx, new Set())}</div>`).join("");
+  document.getElementById("kbwrap").style.display = "none";
+  setTimeout(() => { window.print(); el.innerHTML = ""; document.getElementById("kbwrap").style.display = ""; }, 50);
+}
+
+// ---------------------------------------------------------------- events
+document.getElementById("tabs").addEventListener("click", e => {
+  const b = e.target.closest("button[data-tab]"); if (!b) return;
+  state.tab = b.dataset.tab; state.selKey = null; renderTabs(); render();
+});
+document.getElementById("layers").addEventListener("click", e => {
+  const b = e.target.closest("button[data-layer]"); if (!b) return;
+  state.layer = b.dataset.layer ? b.dataset.layer.split(",") : []; render();
+});
+document.getElementById("kbwrap").addEventListener("click", e => {
+  const m = e.target.closest("[data-mod]");
+  if (m) {
+    const mod = m.dataset.mod, set = new Set(state.layer);
+    set.has(mod) ? set.delete(mod) : set.add(mod);
+    state.layer = ["Ctrl", "Alt", "Shift"].filter(x => set.has(x)); render(); return;
+  }
+  const k = e.target.closest("[data-key]");
+  if (k) { state.selKey = k.dataset.key; render(); }
+});
+const search = document.getElementById("search");
+search.addEventListener("input", () => { state.q = search.value.trim(); render(); });
+for (const [id, prop] of [["showDefaults", "defaults"], ["changedOnly", "changedOnly"], ["showUnbound", "unbound"]])
+  document.getElementById(id).addEventListener("change", e => { state[prop] = e.target.checked; render(); });
+document.querySelector("#table thead").addEventListener("click", e => {
+  const th = e.target.closest("th[data-sort]"); if (th) { state.sort = th.dataset.sort; render(); }
+});
+document.getElementById("printAll").addEventListener("click", printAll);
+document.getElementById("theme").addEventListener("click", () => {
+  const r = document.documentElement, dark = r.dataset.theme ? r.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+  r.dataset.theme = dark ? "light" : "dark";
+});
+// hold real modifier keys to preview layers
+let held = new Set(), before = null;
+function syncHeld() {
+  if (held.size) { if (!before) before = state.layer; state.layer = ["Ctrl", "Alt", "Shift"].filter(x => held.has(x)); }
+  else if (before) { state.layer = before; before = null; }
+  render();
+}
+const modName = e => ({ Shift: "Shift", Control: "Ctrl", Alt: "Alt" }[e.key]);
+addEventListener("keydown", e => {
+  if (e.key === "/" && document.activeElement !== search) { e.preventDefault(); search.focus(); return; }
+  if (e.key === "Escape") { search.value = ""; state.q = ""; search.blur(); render(); return; }
+  if (document.activeElement === search) return;
+  const m = modName(e); if (m && !held.has(m)) { held.add(m); syncHeld(); if (m === "Alt") e.preventDefault(); }
+});
+addEventListener("keyup", e => { const m = modName(e); if (m && held.delete(m)) syncHeld(); });
+addEventListener("blur", () => { if (held.size) { held.clear(); syncHeld(); } });
+
+document.getElementById("ver").textContent = `KiCad ${DATA.version}`;
+document.getElementById("footer").textContent =
+  `Generated ${DATA.generated} from keymap/keymap.toml by ./kprefs docs · ${DATA.actions.length} actions · common actions apply in every editor.`;
+renderTabs(); renderLegend(); render();
+</script>
+</body>
+</html>

@@ -68,6 +68,9 @@ def report(m: keymap.Model, verbose: bool = False) -> int:
     for c in confl:
         line = f"{c['key']:>14}  in {','.join(c['frames'])}: " + " | ".join(fname(m, a) for a in c["actions"])
         (errors if c["severity"] == "error" else warnings).append("conflict " + line)
+    for c in keymap.mnemonic_clashes(m):
+        errors.append(f"{c['key']} for {fname(m, c['action'])} opens a menu in {','.join(c['frames'])} "
+                      "(GTK mnemonic) instead of running the action")
     for e in keymap.equivalence_report(m):
         if e["issue"] == "different keys":
             warnings.append(f"same-purpose mismatch: {fname(m, e['pair'][0])} = {e['keys'][0] or '∅'}  vs  "
