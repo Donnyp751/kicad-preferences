@@ -12,6 +12,11 @@ from . import keys
 
 EDITOR_FRAMES = ("sch", "symedit", "pcb", "fpedit")
 
+# ACTION_MANAGER::FrameNamespacePrefix: in these frames, a global action from the frame's own
+# namespace whose binding differs from its default is tried before other globals on that key.
+FRAME_PREFIX = {"sch": "eeschema.", "symedit": "eeschema.", "sim": "eeschema.",
+                "pcb": "pcbnew.", "fpedit": "pcbnew.", "gerbview": "gerbview.", "pl": "plEditor."}
+
 
 @dataclass
 class Binding:
@@ -148,6 +153,8 @@ def conflicts(m: Model) -> list[dict]:
     action whose tool is on the active stack; otherwise it runs the first
     enabled global action.  So two globals on one key in one frame is a real
     conflict, while a modal tool's context action layered over a global is fine.
+    Since KiCad 10, PromoteUserBoundFrameAction also tries a user-bound global from
+    the frame's own namespace first, so exactly one such action wins cleanly.
     """
     out = []
     for frame, kmap in bindings_by_frame(m).items():
@@ -163,6 +170,8 @@ def conflicts(m: Model) -> list[dict]:
                 if a not in glob:
                     ctx_by_tool[m.catalog[a]["tool"]].append(a)
             problems = []
+            if len(glob) > 1 and len(promoted(m, frame, key, glob)) == 1:
+                glob = []  # resolved by frame promotion, reported by shadowed()
             if len(glob) > 1:
                 problems.append(("global", glob))
             for tool, lst in ctx_by_tool.items():
@@ -183,6 +192,33 @@ def conflicts(m: Model) -> list[dict]:
         else:
             merged[sig] = c
     return sorted(merged.values(), key=lambda c: (c["severity"] != "error", c["key"]))
+
+
+def promoted(m: Model, frame: str, key: str, aids: list[str]) -> list[str]:
+    """Globals KiCad tries first on `key` in `frame`: own namespace and bound away from default."""
+    prefix = FRAME_PREFIX.get(frame)
+    if not prefix:
+        return []
+    out = []
+    for a in aids:
+        cur, cat = m.effective[a], m.catalog[a]
+        if a.startswith(prefix) and ((cur[0] == key and key != cat["default"])
+                                     or (cur[1] == key and key != cat["default_alt"])):
+            out.append(a)
+    return out
+
+
+def shadowed(m: Model) -> list[dict]:
+    """Keys where a frame action wins over other globals by KiCad's frame promotion (informational)."""
+    out = []
+    for frame, kmap in bindings_by_frame(m).items():
+        for key, aids in kmap.items():
+            glob = [a for a in aids if m.catalog[a]["scope"] == "AS_GLOBAL" and not _is_modal(m, a)]
+            win = promoted(m, frame, key, glob) if len(glob) > 1 else []
+            if len(win) == 1:
+                out.append({"frame": frame, "key": key, "winner": win[0],
+                            "shadowed": sorted(a for a in glob if a != win[0])})
+    return out
 
 
 def layered(m: Model) -> list[dict]:

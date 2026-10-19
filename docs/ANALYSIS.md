@@ -19,7 +19,7 @@ The map has four principles:
 This is in `common/tool/action_manager.cpp`, `ACTION_MANAGER::RunHotKey`, and it determines what counts as a real conflict.
 
 - If one of the actions on a key is **context-scoped** and its tool is on the active tool stack, that action wins. Router via placement and drawing posture are examples. These overlaps are fine; the checker calls them "layered".
-- Otherwise KiCad runs the **first enabled global action**. Two global actions on one key in the same editor is therefore a real conflict.
+- Otherwise KiCad tries the global actions in turn and stops at the first one that is enabled and handled. Since KiCad 10 (`PromoteUserBoundFrameAction`), a global from the editor's own namespace (`eeschema.`, `pcbnew.`) whose key differs from its default is tried first. Two globals on one key are only a real conflict when that rule doesn't pick exactly one; the checker lists the resolved ones as "shadowed" under `check -v`.
 - If no binding matches a non-letter key, KiCad retries it without Shift. This is why a binding of `~` fires on Shift+`, and why `Shift+2` should be written `@`.
 - On GTK, the menu bar mnemonics run **before** KiCad sees the key: `&File &Edit &View &Place Ro&ute &Inspect &Tools P&references &Help`. Alt+E, Alt+T, Alt+U and the others open menus instead of running a hotkey.
 
@@ -28,7 +28,7 @@ This is in `common/tool/action_manager.cpp`, `ACTION_MANAGER::RunHotKey`, and it
 | Problem | Detail |
 |---|---|
 | Lost in the v10 migration | Group (`U`): KiCad 10 moved it from `pcbnew.EditorControl.group` to `common.Interactive.group`. Open in Footprint Editor (`Ctrl+E`): the KU file used an older name. Both were unbound. |
-| Conflict `R` (sch) | Place Power vs the common Inactive Layer View cycle |
+| ~~Conflict `R` (sch)~~ | Not real: KiCad 10 runs the editor's own user-bound action (Place Power) before a common one, so R stays the Inactive Layer View cycle in PCB |
 | Conflict `Ctrl+H` (sch) | Hierarchy Navigator vs Place Directive Label |
 | Conflict `Alt+3` (sch) | 3D Viewer vs Select Node |
 | Conflict `K` (pcb) | Draw Text vs Sketch Tracks |
@@ -48,7 +48,6 @@ Every change is in `keymap/keymap.toml` with a `why`. They also appear in the ho
 
 | Action | Old | New | Reason |
 |---|---|---|---|
-| Inactive Layer View cycle (common) | R | Ctrl+Shift+H | R stays Place Power |
 | Place Directive Label | Ctrl+H | Shift+P | label cluster: P, Ctrl+P, Shift+P |
 | Select Node | Alt+3 | Shift+E | E cluster: E highlight, Ctrl+E connection, Shift+E node |
 | Sketch Tracks | K | Shift+K | K is Text in every editor |

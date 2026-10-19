@@ -84,6 +84,8 @@ def report(m: keymap.Model, verbose: bool = False) -> int:
     if verbose:
         for l in keymap.layered(m):
             print(f"layered {l['key']:>10} in {l['frame']}: modal {', '.join(l['modal'])} over {', '.join(l['global'])}")
+        for s in keymap.shadowed(m):
+            print(f"shadowed {s['key']:>9} in {s['frame']}: {s['winner']} wins over {', '.join(s['shadowed'])}")
     bound = sum(1 for k in m.effective.values() if k[0])
     print(f"\n{len(m.catalog)} actions, {bound} bound, {len(keymap.changed_from_default(m))} changed from "
           f"KiCad defaults; {len(errors)} errors, {len(warnings)} warnings")

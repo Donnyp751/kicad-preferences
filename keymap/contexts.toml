@@ -85,6 +85,8 @@ groups = [
   ["eeschema.Simulation.saveWorkbook", "common.Control.save"],
   ["eeschema.Simulation.saveWorkbookAs", "common.Control.saveAs", "eeschema.SymbolLibraryControl.saveLibraryAs"],
   ["eeschema.Simulation.newAnalysisTab", "eeschema.SymbolLibraryControl.newSymbol", "common.Control.new"],
+  # only PCB and Gerbview handle the inactive-layer cycle; elsewhere KiCad falls through to the next action
+  ["common.Control.highContrastModeCycle", "eeschema.Simulation.runSimulation"],
   ["pcbnew.ModuleEditor.newFootprint", "common.Control.new"],
   ["eeschema.SymbolLibraryControl.newSymbol", "common.Control.new"],
   ["eeschema.SymbolLibraryControl.saveLibraryAs", "common.Control.saveAs"],

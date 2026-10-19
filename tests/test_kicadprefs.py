@@ -96,6 +96,7 @@ class ConflictTest(unittest.TestCase):
             "pcbnew.EditorControl.trackWidthInc": dict(scope="AS_GLOBAL", frames=["pcb"], tool="pcbnew.EditorControl", default="", default_alt=""),
             "pcbnew.InteractiveRouter.DragFreeAngle": dict(scope="AS_GLOBAL", frames=["pcb"], tool="pcbnew.InteractiveRouter", default="", default_alt=""),
             "pcbnew.InteractiveRouter.PlaceVia": dict(scope="AS_CONTEXT", frames=["pcb"], tool="pcbnew.InteractiveRouter", default="", default_alt=""),
+            "common.Control.highContrastModeCycle": dict(scope="AS_GLOBAL", frames=["pcb"], tool="common.Control", default="H", default_alt=""),
         }
         ctx = keymap.Contexts(frames={"pcb": "PCB"}, common_frames=["pcb"], frame_overrides={},
                               modal_tools=["pcbnew.InteractiveRouter.PlaceVia"], categories=[],
@@ -108,6 +109,13 @@ class ConflictTest(unittest.TestCase):
         m = self.model({"pcbnew.EditorControl.trackWidthInc": ("G", ""),
                         "pcbnew.InteractiveRouter.DragFreeAngle": ("G", "")})
         self.assertEqual(len(keymap.conflicts(m)), 1)
+
+    def test_frame_promotion_resolves(self):
+        # KiCad 10 tries a user-bound pcbnew.* global before a common one on the same key
+        m = self.model({"pcbnew.EditorControl.trackWidthInc": ("R", ""),
+                        "common.Control.highContrastModeCycle": ("R", "")})
+        self.assertEqual(keymap.conflicts(m), [])
+        self.assertEqual(keymap.shadowed(m)[0]["winner"], "pcbnew.EditorControl.trackWidthInc")
 
     def test_modal_layering_ok(self):
         m = self.model({"pcbnew.EditorControl.trackWidthInc": ("S", ""),
