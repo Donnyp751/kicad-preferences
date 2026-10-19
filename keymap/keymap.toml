@@ -77,6 +77,7 @@ base = "KiCad Unlocked QWERTY (2025) + refinements"
 "eeschema.EditorControl.setDNP" = { key = "Alt+N", why = "'not placed' next to N no-connect" }  # Do not Populate
 "eeschema.EditorControl.showNetNavigator" = "4"  # Net Navigator
 "eeschema.EditorControl.showPcbNew" = "F6"  # Switch to PCB Editor
+"eeschema.EditorControl.assignFootprints" = { key = "Shift+F", why = "footprint cluster on F (bulk version of F)" }  # Assign Footprints...
 
 # --- eeschema.InspectionTool
 "eeschema.InspectionTool.runERC" = "F4"  # Electrical Rules Checker
@@ -110,7 +111,7 @@ base = "KiCad Unlocked QWERTY (2025) + refinements"
 # --- eeschema.InteractiveEdit
 "eeschema.InteractiveEdit.autoplaceFields" = "S"  # Autoplace Fields
 "eeschema.InteractiveEdit.breakWire" = { key = "Shift+Q", why = "wire cluster on Q" }  # Break
-"eeschema.InteractiveEdit.editFootprint" = "Y"  # Edit Footprint...
+"eeschema.InteractiveEdit.editFootprint" = { key = "F", why = "KiCad default restored (KU had Y): F for footprint, home row; Shift+F assigns footprints" }  # Edit Footprint...
 "eeschema.InteractiveEdit.editReference" = { key = "Alt+D", why = "field-edit cluster on D" }  # Edit Reference Designator...
 "eeschema.InteractiveEdit.editValue" = { key = "Shift+D", why = "D now opens Properties (same as PCB); value edit stays on the D key" }  # Edit Value...
 "eeschema.InteractiveEdit.mirrorH" = "B"  # Mirror Horizontally

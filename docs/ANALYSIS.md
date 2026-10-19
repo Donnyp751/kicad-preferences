@@ -89,6 +89,7 @@ The KU single keys `3` (rectangle) and `#` (rule area) stay as alternates in the
 | Cycle router mode | Shift+Q | next to Q route |
 | Track & Via Properties | Shift+T | next to T via size (Alt+T would open the Tools menu) |
 | Net Inspector | Ctrl+4 | next to 4 ratsnest / sch 4 net navigator |
+| Edit Footprint / Assign Footprints | F / Shift+F | footprint cluster; F is KiCad's default (KU had Y, which is now free in sch) |
 | Undo | Backspace (Ctrl+Z alt) | Ctrl+Z restored for muscle memory |
 | Drawing-sheet editor Move | 1 | same as sch/pcb move |
 
